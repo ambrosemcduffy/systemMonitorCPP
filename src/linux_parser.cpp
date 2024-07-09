@@ -176,10 +176,11 @@ string LinuxParser::Command(int pid) {
 
         string _stringPid = std::to_string(pid);
         std::ifstream stream(kProcDirectory+_stringPid+kCmdlineFilename);
+        if (stream.is_open()){
         std::getline(stream, line);
+        }
         std::istringstream linestream(line);
         linestream  >> line;
-        //std::cout << "PRINTING PID AND COMMAND: PID: " << pid << "  Command: " << line <<  std::endl; 
         return line;
         }
 
@@ -217,12 +218,12 @@ string LinuxParser::Uid(int pid) {
         std::ifstream stream(kProcDirectory+_stringPid+kStatusFilename);
         if (stream.is_open()){
                 while(std::getline(stream, line)){
-                                std::replace(line.begin(), line.end(), ' ', '_');
-                                std::replace(line.begin(), line.end(), '-', ' ');
-                                std::replace(line.begin(), line.end(),':', ' ');
+                                //std::replace(line.begin(), line.end(), ' ', '_');
+                                //std::replace(line.begin(), line.end(), '-', ' ');
+                                //std::replace(line.begin(), line.end(),':', ' ');
                                 std::istringstream linestream(line);
                                 linestream >> key >> value >> other;
-                                if (key=="Uid"){
+                                if (key=="Uid:"){
                                         return value;
                                 }
                 } 
