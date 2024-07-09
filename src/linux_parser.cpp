@@ -30,7 +30,7 @@ string LinuxParser::OperatingSystem() {
       }
     }
   }
-  return value;
+  return std::string();
 }
 
 // DONE: An example of how to read data from the filesystem
@@ -179,6 +179,7 @@ string LinuxParser::Command(int pid) {
         std::getline(stream, line);
         std::istringstream linestream(line);
         linestream  >> line;
+        //std::cout << "PRINTING PID AND COMMAND: PID: " << pid << "  Command: " << line <<  std::endl; 
         return line;
         }
 
@@ -187,7 +188,7 @@ string LinuxParser::Command(int pid) {
 string LinuxParser::Ram(int pid) { 
         string line;
         string key;
-        string value;
+        int value;
         string memsize;
 
         string _stringPid = std::to_string(pid);
@@ -197,17 +198,16 @@ string LinuxParser::Ram(int pid) {
                                 std::istringstream linestream(line);
                                 linestream >> key >> value >> memsize;
                                 if (key=="VmSize:"){
-                                return value;}
+                                return std::to_string(value/1024);}
                                 }
         }
-        return " "; 
+        return std::string(); 
 
 }
 
 // TODO: Read and return the user ID associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::Uid(int pid) {
-
         string line;
         string key;
         string value;
@@ -217,15 +217,18 @@ string LinuxParser::Uid(int pid) {
         std::ifstream stream(kProcDirectory+_stringPid+kStatusFilename);
         if (stream.is_open()){
                 while(std::getline(stream, line)){
+                                std::replace(line.begin(), line.end(), ' ', '_');
+                                std::replace(line.begin(), line.end(), '-', ' ');
+                                std::replace(line.begin(), line.end(),':', ' ');
                                 std::istringstream linestream(line);
                                 linestream >> key >> value >> other;
-                                if (key=="Uid:"){
+                                if (key=="Uid"){
                                         return value;
                                 }
-                }
+                } 
         }
-        return " "; 
-}
+        return std::string();
+       }
 
 // TODO: Read and return the user associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
@@ -244,6 +247,7 @@ string LinuxParser::User(int pid) {
                         std::replace(line.begin(), line.end(),':', ' ');
                         std::istringstream linestream(line);
                         linestream >> userName >> userPassword >> userID >> other;
+                        //std::cout << "PRINTING USER AND PROCESS USER ID" << userID << " " << processUid << std::endl;
                         if (userID == processUid){
                         return userName;
                         }
@@ -251,7 +255,7 @@ string LinuxParser::User(int pid) {
         }
 
 
-        return " "; 
+        return std::string(); 
 
 }
 

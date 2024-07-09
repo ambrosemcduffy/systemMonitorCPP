@@ -9,6 +9,8 @@
 #include "processor.h"
 #include "system.h"
 
+#include <iostream>
+
 using std::set;
 using std::size_t;
 using std::string;
@@ -25,10 +27,21 @@ vector<Process>& System::Processes() {
   for (auto pid : processPids) {
     Process myprocess;
     myprocess.setPid(pid);
-    processes_.push_back(myprocess);
-  }
+    if (!myprocess.Ram().empty() && !myprocess.Command().empty()){
+     processes_.push_back(myprocess);
+
+    }
+   }
   return processes_;
 }
+
+//int main(){
+//        System mysys;
+//        vector<Process>& procs = mysys.Processes();
+//        for(auto proc:procs){
+//                std::cout << proc.Pid() << "  " << proc.User() << "  " << proc.Ram() << "  " << proc.Command() << "  " << std::endl;
+//        }
+//}
 
 // TODO: Return the system's kernel identifier (string)
 std::string System::Kernel() { return LinuxParser::Kernel(); }
