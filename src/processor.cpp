@@ -16,7 +16,8 @@
 std::vector<float> getCpuTimeBaby(){
 
         std::vector<long> valueToLong;
-        std::vector<std::string> utilizationsArr= LinuxParser::CpuUtilization();
+        std::vector<std::string> cpuValues = LinuxParser::CpuUtilization();
+        std::vector<std::string> utilizationsArr(cpuValues.begin()+2, cpuValues.begin()+12);
         if (utilizationsArr.size() != 0){
                 for (auto cpuValue:utilizationsArr){
                        // std::cout << cpuValue << std::endl;

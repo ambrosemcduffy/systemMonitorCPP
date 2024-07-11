@@ -16,7 +16,30 @@ void Process::setPid(int newPid) { this->pid = newPid; }
 int Process::Pid() const { return this->pid; }
 
 // TODO: Return this process's CPU utilization
-float Process::CpuUtilization() { return 0; }
+float Process::CpuUtilization()const {
+        std::vector<std::string> arr = LinuxParser::CpuUtilization(Pid());
+        if (arr.size() != 0){
+                std::vector<std::string> newArr(arr.begin()+13, arr.begin()+23);
+                //for (auto v:arr){
+                //        std::cout << v << std::endl;
+                //}
+                float utime = std::stof(arr[13]);
+                //std::cout << utime << std::endl;
+                float stime = std::stof(arr[14]);
+                float cutime = std::stof(arr[15]);
+                float cstime = std::stof(arr[16]);
+                float starttime = std::stof(arr[21]);
+
+                float total_time = utime + stime;
+                //float total_time = total_timeInit + cutime + cstime;
+                float seconds = ((float)LinuxParser::UpTime() - starttime) / sysconf(_SC_CLK_TCK);
+                float cpu_usage = ((total_time / sysconf(_SC_CLK_TCK)) / seconds);
+                return cpu_usage;
+        }
+
+
+        return 0.0; 
+}
 
 // TODO: Return the command that generated this process
 string Process::Command() { return LinuxParser::Command(Pid()); }
@@ -45,3 +68,9 @@ bool Process::operator<(Process const& a) const {
         long ram2 = std::stol(a.Ram());
         return ram2 < ram1;
 }
+
+
+//int main(){
+//        Process proc;
+//        float cpuUtil = proc.CpuUtilization();
+//}
