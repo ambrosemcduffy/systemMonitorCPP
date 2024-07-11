@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 #include "linux_parser.h"
+#include "format.h"
 
 using std::stof;
 using std::string;
@@ -129,7 +130,24 @@ long LinuxParser::ActiveJiffies() { return 0; }
 long LinuxParser::IdleJiffies() { return 0; }
 
 // TODO: Read and return CPU utilization
-vector<string> LinuxParser::CpuUtilization() { return {}; }
+vector<string> LinuxParser::CpuUtilization() {
+        std::string line;
+        std::string key;
+        std::vector<std::string> linesArr;
+        std::ifstream stream(kProcDirectory+kStatFilename);
+        if (stream.is_open()){
+                while(std::getline(stream, line)){
+                        std::istringstream linestream(line);
+                    while (std::getline(linestream,key, ' ')){
+                    linesArr.push_back(key);
+                    } 
+                }
+        }
+
+
+        vector<std::string> cpuValues(linesArr.begin()+2, linesArr.begin()+12); 
+        return cpuValues;
+}
 
 // TODO: Read and return the total number of processes
 int LinuxParser::TotalProcesses() {
@@ -260,6 +278,45 @@ string LinuxParser::User(int pid) {
 
 }
 
+
+
+std::vector<std::string> split(std::string &token, char delimiter) {
+  std::vector<std::string> tokens;
+  std::istringstream mystream(token);
+  while (std::getline(mystream, token, delimiter)) {
+    tokens.push_back(token);
+  }
+  return tokens;
+}
+
+
 // TODO: Read and return the uptime of a process
-// REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::UpTime(int pid[[maybe_unused]]) {return 0; }
+
+long LinuxParser::UpTime(int pid) {
+  std::string path = "/proc/" + std::to_string(pid) + "/stat";
+  std::ifstream file(path);
+  std::string line;
+  std::vector<std::string> _arr;
+  if (file){
+    while (getline(file, line)){
+      std::vector<std::string> fields = split(line, ' ');
+      long startTime = std::stol(fields[21]);
+     // std::cout << fields[21] << std::endl;
+      long secs = (long)startTime / sysconf(_SC_CLK_TCK);
+      return secs;
+    }
+  }
+  return -1.0;
+}
+
+std::string formatTime(long seconds) {
+    long hours = seconds / 3600;
+    long minutes = (seconds % 3600) / 60;
+    long secs = seconds % 60;
+    std::ostringstream timeStream;
+    timeStream << (hours < 10 ? "0" : "") << hours << ":"
+               << (minutes < 10 ? "0" : "") << minutes << ":"
+               << (secs < 10 ? "0" : "") << secs;
+    return timeStream.str();
+}
+
