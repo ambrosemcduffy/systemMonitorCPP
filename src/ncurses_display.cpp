@@ -95,7 +95,7 @@ void NCursesDisplay::Display(System& system, int n) {
       newwin(3 + n, x_max - 1, system_window->_maxy + 1, 0);
 
   while (1) {
-    init_pair(1, COLOR_BLUE, COLOR_BLACK);
+    init_pair(1, COLOR_YELLOW, COLOR_BLACK);
     init_pair(2, COLOR_GREEN, COLOR_BLACK);
     werase(system_window);
     werase(process_window);

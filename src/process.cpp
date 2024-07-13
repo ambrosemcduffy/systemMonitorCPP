@@ -64,9 +64,9 @@ long int Process::UpTime() { return LinuxParser::UpTime(Pid()); }
 //
 
 bool Process::operator<(Process const& a) const {
-        long ram1 = std::stol(Ram());
-        long ram2 = std::stol(a.Ram());
-        return ram2 < ram1;
+        float cpu1  = CpuUtilization();
+        float cpu2 = a.CpuUtilization();
+        return cpu2 < cpu1;
 }
 
 
