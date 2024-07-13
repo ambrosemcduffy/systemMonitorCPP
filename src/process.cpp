@@ -29,10 +29,10 @@ float Process::CpuUtilization()const {
                 float cutime = std::stof(arr[15]);
                 float cstime = std::stof(arr[16]);
                 float starttime = std::stof(arr[21]);
-
-                float total_time = utime + stime;
+                float total_time = utime + stime + cutime + cstime;
+                //float total_time = utime + stime;
                 //float total_time = total_timeInit + cutime + cstime;
-                float seconds = ((float)LinuxParser::UpTime() - starttime) / sysconf(_SC_CLK_TCK);
+                float seconds = (float)LinuxParser::UpTime() - (starttime / sysconf(_SC_CLK_TCK));
                 float cpu_usage = ((total_time / sysconf(_SC_CLK_TCK)) / seconds);
                 return cpu_usage;
         }
